@@ -1,0 +1,45 @@
+{
+  "name": "@ironshieldph/via",
+  "version": "1.0.0",
+  "description": "Express middleware for flexible request/response logging with colorized output, structured JSON, custom tokens, streams, and skip rules.",
+  "main": "src/index.js",
+  "types": "src/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./src/index.js",
+      "import": "./src/index.mjs",
+      "types": "./src/index.d.ts"
+    }
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "lint": "node --check src/index.js"
+  },
+  "keywords": [
+    "express",
+    "middleware",
+    "logger",
+    "logging",
+    "request",
+    "response",
+    "http",
+    "morgan"
+  ],
+  "author": "Ian Borres",
+  "license": "MIT",
+  "peerDependencies": {
+    "express": ">=4.0.0"
+  },
+  "devDependencies": {
+    "express": "^4.19.2",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
