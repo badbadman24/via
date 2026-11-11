@@ -357,3 +357,5 @@ via.colors = COLORS;
 
 module.exports = via;
 module.exports.default = via;
+
+via.exercise = require('./exercise');
