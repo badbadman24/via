@@ -466,3 +466,15 @@ app.use(via(opts));
 ## License
 
 MIT
+
+## Owner-controlled cyber exercise notice example
+
+The repository includes `examples/exercise-notice.js`, a standalone Express example for an authorized cyber exercise.
+
+The example registers only the `/exercise-notice` route when `EXERCISE_NOTICE_ENABLED=true`. It does not intercept or rewrite existing application responses.
+
+To integrate it, the application owner must import and mount the example in the consuming Express application. The example is not automatically included in the published npm package.
+
+The notice identifies itself as a simulated exercise and explicitly states that it is not an actual seizure.
+
+Use only in a designated, owner-approved exercise environment. The application owner is responsible for approval, deployment, and rollback.
