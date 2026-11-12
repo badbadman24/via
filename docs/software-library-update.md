@@ -55,7 +55,7 @@ Initial local validation produced the following results:
 | Locked package entries with integrity fields | 91 of 91 |
 | npm audit | 0 vulnerabilities |
 | Source lint | Passed |
-| Automated tests | 10 passed, 0 failed |
+| Automated tests | 14 passed, 0 failed |
 | Git whitespace validation | Passed |
 
 These results represent the local validation performed during development. Successful execution of the GitHub Actions workflow remains subject to repository configuration and CI execution.
