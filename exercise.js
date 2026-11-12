@@ -18,7 +18,6 @@ app.get('/', (req, res) => {
   res.send(`
     <h1>WEBSITE SEIZED — DCO HUNT TEAM</h1>
     <h2>APT GHOSTFIRE CYBER EXERCISE</h2>
-    <p>SIMULATED SECURITY INCIDENT</p>
     <p>This website has been seized by the DCO HUNT TEAM.</p>
     <strong>AUTHORIZED CYBER EXERCISE — NOT AN ACTUAL SEIZURE.</strong>
   `);
