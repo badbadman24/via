@@ -21,6 +21,7 @@ declare namespace via {
   const FORMATS: Record<string, string>;
   const TOKENS: Record<string, ViaTokenFn>;
   const colors: Record<string, string>;
+  function exercise(options?: { enabled?: boolean; stream?: NodeJS.WritableStream }): (req: any, res: any, next: (err?: any) => void) => void;
 }
 
 export default via;

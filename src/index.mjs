@@ -6,3 +6,4 @@ export const format = pkg.format;
 export const FORMATS = pkg.FORMATS;
 export const TOKENS = pkg.TOKENS;
 export const colors = pkg.colors;
+export const exercise = pkg.exercise;
