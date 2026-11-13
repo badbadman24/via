@@ -344,6 +344,7 @@ app.use(via({
 | `colors` | `boolean` | TTY detection | Enable colorized output. |
 | `immediate` | `boolean` | `false` | Log when request is received instead of on response finish. |
 | `eol` | `string` | `'\n'` | Line ending. |
+| `exercise` | `object` | disabled | Optional transaction observer; requires `enabled: true` and `VIA_EXERCISE_ENABLED=true`. Records method, query-free path, status, duration, and response completion to its configured stream (default: process.stdout). Does not record headers or bodies. |
 
 `via(options, extra)` is also supported, e.g. `via('dev', { stream })`.
 

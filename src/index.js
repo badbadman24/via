@@ -1,5 +1,7 @@
 'use strict';
 
+const exercise = require('./exercise');
+
 const FORMATS = {
   combined:
     ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"',
@@ -54,6 +56,13 @@ function normalizeOptions(options) {
     opts = Object.assign({}, options);
   } else {
     throw new TypeError('options must be a string, function, or object');
+  }
+
+  if (
+    opts.exercise != null &&
+    (typeof opts.exercise !== 'object' || Array.isArray(opts.exercise))
+  ) {
+    throw new TypeError('exercise must be an object');
   }
 
   if (opts.format == null) opts.format = 'dev';
@@ -304,10 +313,17 @@ function via(options, extra) {
     options = Object.assign({}, options, extra);
   }
   const opts = normalizeOptions(options);
+  const exerciseObserver = opts.exercise
+    ? exercise.createObserver(opts.exercise)
+    : null;
 
   const middleware = function viaMiddleware(req, res, next) {
     // start timer
     getStart(req);
+
+    if (exerciseObserver) {
+      exerciseObserver(req, res);
+    }
 
     const log = () => {
       try {
@@ -358,4 +374,4 @@ via.colors = COLORS;
 module.exports = via;
 module.exports.default = via;
 
-via.exercise = require('./exercise');
+via.exercise = exercise;

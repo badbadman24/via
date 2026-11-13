@@ -1,19 +1,23 @@
 'use strict';
 
-
-
-function exercise(options = {}) {
-  const enabled = options.enabled === true && process.env.VIA_EXERCISE_ENABLED === 'true';
+function createObserver(options = {}) {
+  const enabled =
+    options.enabled === true &&
+    process.env.VIA_EXERCISE_ENABLED === 'true';
   const stream = options.stream || process.stdout;
 
-  return function viaExercise(req, res, next) {
-    if (!enabled) return next();
+  return function observe(req, res) {
+    if (!enabled) return;
 
     const started = process.hrtime.bigint();
     const method = req.method;
     const path = (req.originalUrl || req.url || '/').split('?')[0];
+    let logged = false;
 
-    res.once('finish', () => {
+    const record = (responseCompleted) => {
+      if (logged) return;
+      logged = true;
+
       const durationMs =
         Number(process.hrtime.bigint() - started) / 1e6;
 
@@ -23,13 +27,32 @@ function exercise(options = {}) {
         path,
         status: res.statusCode,
         durationMs: Number(durationMs.toFixed(3)),
+        responseCompleted,
       };
 
-      stream.write(JSON.stringify(event) + '\n');
-    });
+      try {
+        stream.write(JSON.stringify(event) + '\n');
+      } catch (_) {
+        // Exercise telemetry must never interrupt the application response.
+      }
+    };
 
-    next();
+    res.once('finish', () => record(true));
+    res.once('close', () => {
+      if (!res.writableEnded) record(false);
+    });
   };
 }
+
+function exercise(options = {}) {
+  const observe = createObserver(options);
+
+  return function viaExercise(req, res, next) {
+    observe(req, res);
+    return next();
+  };
+}
+
+exercise.createObserver = createObserver;
 
 module.exports = exercise;

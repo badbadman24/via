@@ -128,3 +128,59 @@ test('date token clf and iso', async () => {
   assert.match(out, /\d{2}\/\w{3}\/\d{4}/);
   assert.match(out, /\d{4}-\d{2}-\d{2}T/);
 });
+
+test('via integrates opt-in exercise transaction observer without recording secrets', async () => {
+  const previous = process.env.VIA_EXERCISE_ENABLED;
+  process.env.VIA_EXERCISE_ENABLED = 'true';
+
+  try {
+    const normalChunks = [];
+    const exerciseChunks = [];
+    const app = express();
+
+    app.use(express.text());
+    app.use(via({
+      format: 'dev',
+      stream: { write: (line) => { normalChunks.push(line); return true; } },
+      colors: false,
+      exercise: {
+        enabled: true,
+        stream: { write: (line) => { exerciseChunks.push(line); return true; } },
+      },
+    }));
+
+    app.post('/exercise-login', (req, res) => {
+      res.status(201).send('synthetic-response-secret');
+    });
+
+    await request(app)
+      .post('/exercise-login?synthetic=query-secret')
+      .set('Authorization', 'Bearer synthetic-header-secret')
+      .send('password=synthetic-body-secret')
+      .expect(201);
+
+    assert.equal(exerciseChunks.length, 1);
+    const event = JSON.parse(exerciseChunks[0]);
+
+    assert.equal(event.event, 'exercise_http_transaction');
+    assert.equal(event.method, 'POST');
+    assert.equal(event.path, '/exercise-login');
+    assert.equal(event.status, 201);
+    assert.equal(event.responseCompleted, true);
+    assert.equal(typeof event.durationMs, 'number');
+
+    const exerciseLog = exerciseChunks.join('');
+    assert.doesNotMatch(
+      exerciseLog,
+      /synthetic-(?:query|header|body|response)-secret/
+    );
+
+    assert.match(normalChunks.join(''), /POST \/exercise-login/);
+  } finally {
+    if (previous === undefined) {
+      delete process.env.VIA_EXERCISE_ENABLED;
+    } else {
+      process.env.VIA_EXERCISE_ENABLED = previous;
+    }
+  }
+});
