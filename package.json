@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "test": "node --test",
+    "demo": "node demo/server.js",
     "lint": "node --check src/index.js"
   },
   "keywords": [
